@@ -1,0 +1,18 @@
+# Binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.bin
+
+# Excel files
+*.xls
+*.xlsx
+*.xlsm
+*.xlsb
+*.xltx
+*.xltm
+
+backend/api
+backend/free-contest-api
+backend/K\341\273\263 thi s\304\251 quan ph\303\242n \304\221\341\273\231i/**

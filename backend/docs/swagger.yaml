@@ -1,0 +1,493 @@
+definitions:
+  controller.ListOfficerResponse:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.Officer'
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  controller.ListSubjectResponse:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.Subject'
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  controller.ListUnitResponse:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.Unit'
+        type: array
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  controller.OfficerResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Officer'
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  controller.SubmissionResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Submission'
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  controller.TestResponse:
+    properties:
+      data:
+        $ref: '#/definitions/model.Test'
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  model.Chapter:
+    properties:
+      folder_path:
+        description: path to the folder containing questions
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      num_question_test:
+        description: number of questions of chapter in the test
+        type: integer
+      questions:
+        items:
+          $ref: '#/definitions/model.Question'
+        type: array
+      subject_id:
+        type: integer
+      total_questions:
+        description: total number of questions in the chapter
+        type: integer
+    type: object
+  model.Officer:
+    properties:
+      id:
+        type: integer
+      list_submission:
+        description: list of submissions made by the officer
+        items:
+          $ref: '#/definitions/model.Submission'
+        type: array
+      name:
+        type: string
+      position:
+        type: string
+      rank:
+        type: string
+      score:
+        type: number
+      unit:
+        $ref: '#/definitions/model.Unit'
+      unit_id:
+        type: integer
+    type: object
+  model.Question:
+    properties:
+      answer_a:
+        type: string
+      answer_b:
+        type: string
+      answer_c:
+        type: string
+      answer_d:
+        type: string
+      content:
+        type: string
+      correct:
+        description: correct answer (A, B, C, or D)
+        type: string
+      id:
+        type: integer
+    type: object
+  model.Subject:
+    properties:
+      chapters:
+        description: list of chapters in the subject
+        items:
+          $ref: '#/definitions/model.Chapter'
+        type: array
+      contest_id:
+        type: integer
+      description:
+        type: string
+      folder_path:
+        description: path to the folder containing questions
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      num_question_test:
+        description: number of questions of subject in the test
+        type: integer
+      test_time:
+        description: time limit for the test in minutes
+        type: integer
+    type: object
+  model.Submission:
+    properties:
+      answers:
+        additionalProperties:
+          type: string
+        description: question ID to answer mapping
+        type: object
+      id:
+        type: integer
+      officer_id:
+        type: integer
+      score:
+        type: number
+      subject_id:
+        description: ID of the subject for which the test was taken
+        type: integer
+      subject_name:
+        description: name of the subject for which the test was taken
+        type: string
+      submitted_at:
+        description: timestamp of submission
+        type: integer
+      test_id:
+        type: integer
+    type: object
+  model.Test:
+    properties:
+      contest_id:
+        type: string
+      duration:
+        description: in seconds
+        type: integer
+      id:
+        type: integer
+      is_finished:
+        description: whether the test is finished
+        type: boolean
+      name:
+        type: string
+      officer:
+        $ref: '#/definitions/model.Officer'
+      questions:
+        description: list of questions in the test
+        items:
+          $ref: '#/definitions/model.Question'
+        type: array
+      remaining_time:
+        description: time left for the test in seconds
+        type: integer
+      start_time:
+        description: timestamp when the test started
+        type: integer
+      subject:
+        $ref: '#/definitions/model.Subject'
+    type: object
+  model.Unit:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      parent_unit:
+        $ref: '#/definitions/model.Unit'
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a free contest API server for managing officer tests and contests.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Free Contest API
+  version: "1.0"
+paths:
+  /api/v1/officers:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all officers in the system with their unit information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of officers with unit information
+          schema:
+            items:
+              $ref: '#/definitions/controller.ListOfficerResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all officers
+      tags:
+      - Officers
+  /api/v1/officers/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a specific officer by their ID with unit information
+      parameters:
+      - description: Officer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Officer information with unit details
+          schema:
+            $ref: '#/definitions/controller.OfficerResponse'
+        "400":
+          description: Bad request - invalid officer ID
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Officer not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get officer by ID
+      tags:
+      - Officers
+  /api/v1/subjects:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all subjects with basic information only (no questions
+        or chapters)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success response with subjects list
+          schema:
+            $ref: '#/definitions/controller.ListSubjectResponse'
+        "500":
+          description: internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all subjects
+      tags:
+      - subjects
+  /api/v1/tests/officer-subject:
+    get:
+      consumes:
+      - application/json
+      description: Creates and returns a test for an officer in a specific subject
+        with random questions
+      parameters:
+      - description: Officer ID
+        in: query
+        name: officerID
+        required: true
+        type: integer
+      - description: Subject ID
+        in: query
+        name: subjectID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Test created successfully or existing test returned
+          schema:
+            $ref: '#/definitions/controller.TestResponse'
+        "400":
+          description: Bad request - missing or invalid parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Officer or subject not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a test for an officer in a specific subject
+      tags:
+      - Tests
+  /api/v1/tests/start:
+    post:
+      consumes:
+      - application/json
+      description: Starts a test by setting the start time for the specified officer
+        and test
+      parameters:
+      - description: Officer ID
+        in: query
+        name: officerID
+        required: true
+        type: integer
+      - description: Test ID
+        in: query
+        name: testID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Test started successfully
+          schema:
+            $ref: '#/definitions/controller.TestResponse'
+        "400":
+          description: Bad request - missing or invalid parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Test not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Test already started
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Start a test for an officer
+      tags:
+      - Tests
+  /api/v1/tests/submit:
+    post:
+      consumes:
+      - application/json
+      description: Submit answers for a test and get the calculated score
+      parameters:
+      - description: Officer ID
+        in: query
+        name: officerID
+        required: true
+        type: integer
+      - description: Test ID
+        in: query
+        name: testID
+        required: true
+        type: integer
+      - description: Question ID to answer mapping
+        in: body
+        name: submission
+        required: true
+        schema:
+          additionalProperties:
+            type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Test submitted successfully with score
+          schema:
+            $ref: '#/definitions/controller.SubmissionResponse'
+        "400":
+          description: Bad request - missing or invalid parameters
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Test not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Test already submitted or not started
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Submit test answers
+      tags:
+      - Tests
+  /api/v1/units:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all units in the system
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of units
+          schema:
+            items:
+              $ref: '#/definitions/controller.ListUnitResponse'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all units
+      tags:
+      - Units
+swagger: "2.0"

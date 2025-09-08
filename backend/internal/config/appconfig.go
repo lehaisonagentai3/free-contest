@@ -8,9 +8,9 @@ import (
 )
 
 type AppConfig struct {
-	ListUnit    []model.Unit    `json:"list_unit,omitempty"`
-	ListOfficer []model.Officer `json:"list_officer,omitempty"`
-	ContestPath string          `json:"contest_path,omitempty"` // Path to the contest data directory contain multi subjects
+	ListOfficer []*model.Officer `json:"list_officer,omitempty"`
+	ContestPath string           `json:"contest_path,omitempty"` // Path to the contest data directory contain multi subjects
+	OfficerPath string           `json:"officer_path,omitempty"` // Path to the officer data directory
 }
 
 func LoadAppConfig(configFileJson string) (*AppConfig, error) {

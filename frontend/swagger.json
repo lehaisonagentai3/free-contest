@@ -1,0 +1,733 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a free contest API server for managing officer tests and contests.",
+        "title": "Free Contest API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "paths": {
+        "/api/v1/officers": {
+            "get": {
+                "description": "Retrieves all officers in the system with their unit information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Officers"
+                ],
+                "summary": "Get all officers",
+                "responses": {
+                    "200": {
+                        "description": "List of officers with unit information",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/controller.ListOfficerResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/officers/{id}": {
+            "get": {
+                "description": "Retrieves a specific officer by their ID with unit information",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Officers"
+                ],
+                "summary": "Get officer by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Officer ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Officer information with unit details",
+                        "schema": {
+                            "$ref": "#/definitions/controller.OfficerResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - invalid officer ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Officer not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/subjects": {
+            "get": {
+                "description": "Get list of all subjects with basic information only (no questions or chapters)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "subjects"
+                ],
+                "summary": "Get all subjects",
+                "responses": {
+                    "200": {
+                        "description": "success response with subjects list",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ListSubjectResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tests/officer-subject": {
+            "get": {
+                "description": "Creates and returns a test for an officer in a specific subject with random questions",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Get a test for an officer in a specific subject",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Officer ID",
+                        "name": "officerID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Subject ID",
+                        "name": "subjectID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test created successfully or existing test returned",
+                        "schema": {
+                            "$ref": "#/definitions/controller.TestResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - missing or invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Officer or subject not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tests/start": {
+            "post": {
+                "description": "Starts a test by setting the start time for the specified officer and test",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Start a test for an officer",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Officer ID",
+                        "name": "officerID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Test ID",
+                        "name": "testID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test started successfully",
+                        "schema": {
+                            "$ref": "#/definitions/controller.TestResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - missing or invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Test not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Test already started",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tests/submit": {
+            "post": {
+                "description": "Submit answers for a test and get the calculated score",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Tests"
+                ],
+                "summary": "Submit test answers",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Officer ID",
+                        "name": "officerID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Test ID",
+                        "name": "testID",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Question ID to answer mapping",
+                        "name": "submission",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Test submitted successfully with score",
+                        "schema": {
+                            "$ref": "#/definitions/controller.SubmissionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - missing or invalid parameters",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Test not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Test already submitted or not started",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/units": {
+            "get": {
+                "description": "Retrieves all units in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Units"
+                ],
+                "summary": "Get all units",
+                "responses": {
+                    "200": {
+                        "description": "List of units",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/controller.ListUnitResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controller.ListOfficerResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Officer"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.ListSubjectResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Subject"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.ListUnitResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Unit"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.OfficerResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Officer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.SubmissionResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Submission"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.TestResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/model.Test"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Chapter": {
+            "type": "object",
+            "properties": {
+                "folder_path": {
+                    "description": "path to the folder containing questions",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "num_question_test": {
+                    "description": "number of questions of chapter in the test",
+                    "type": "integer"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Question"
+                    }
+                },
+                "subject_id": {
+                    "type": "integer"
+                },
+                "total_questions": {
+                    "description": "total number of questions in the chapter",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Officer": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "list_submission": {
+                    "description": "list of submissions made by the officer",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Submission"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "rank": {
+                    "type": "string"
+                },
+                "score": {
+                    "type": "number"
+                },
+                "unit": {
+                    "$ref": "#/definitions/model.Unit"
+                },
+                "unit_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Question": {
+            "type": "object",
+            "properties": {
+                "answer_a": {
+                    "type": "string"
+                },
+                "answer_b": {
+                    "type": "string"
+                },
+                "answer_c": {
+                    "type": "string"
+                },
+                "answer_d": {
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "correct": {
+                    "description": "correct answer (A, B, C, or D)",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Subject": {
+            "type": "object",
+            "properties": {
+                "chapters": {
+                    "description": "list of chapters in the subject",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Chapter"
+                    }
+                },
+                "contest_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "folder_path": {
+                    "description": "path to the folder containing questions",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "num_question_test": {
+                    "description": "number of questions of subject in the test",
+                    "type": "integer"
+                },
+                "test_time": {
+                    "description": "time limit for the test in minutes",
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Submission": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "description": "question ID to answer mapping",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "officer_id": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "number"
+                },
+                "subject_id": {
+                    "description": "ID of the subject for which the test was taken",
+                    "type": "integer"
+                },
+                "subject_name": {
+                    "description": "name of the subject for which the test was taken",
+                    "type": "string"
+                },
+                "submitted_at": {
+                    "description": "timestamp of submission",
+                    "type": "integer"
+                },
+                "test_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "model.Test": {
+            "type": "object",
+            "properties": {
+                "contest_id": {
+                    "type": "string"
+                },
+                "duration": {
+                    "description": "in seconds",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_finished": {
+                    "description": "whether the test is finished",
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "officer": {
+                    "$ref": "#/definitions/model.Officer"
+                },
+                "questions": {
+                    "description": "list of questions in the test",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/model.Question"
+                    }
+                },
+                "remaining_time": {
+                    "description": "time left for the test in seconds",
+                    "type": "integer"
+                },
+                "start_time": {
+                    "description": "timestamp when the test started",
+                    "type": "integer"
+                },
+                "subject": {
+                    "$ref": "#/definitions/model.Subject"
+                }
+            }
+        },
+        "model.Unit": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "parent_unit": {
+                    "$ref": "#/definitions/model.Unit"
+                }
+            }
+        }
+    }
+}

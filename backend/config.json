@@ -1,0 +1,67 @@
+{
+    "list_unit": [
+        {
+            "id": 1,
+            "name": "Phòng Tham mưu"
+        },
+        {
+            "id": 2,
+            "name": "Phòng Chính trị"
+        },
+        {
+            "id": 3,
+            "name": "Phòng Hậu cần - Kỹ thuật"
+        },
+        {
+            "id": 4,
+            "name": "Tiểu đoàn 1"
+        },
+        {
+            "id": 5,
+            "name": "Tiểu đoàn 2"
+        },
+        {
+            "id": 6,
+            "name": "Tiểu đoàn 3"
+        },
+        {
+            "id": 7,
+            "name": "Đại đội 60"
+        },
+        {
+            "id": 8,
+            "name": "Đại đội 70"
+        },
+        {
+            "id": 9,
+            "name": "Kho 36"
+        }
+    ],
+    "list_officer": [
+        {
+            "id": 1,
+            "name": "Nguyễn Văn A",
+            "unit_id": 1,
+            "score": 0,
+            "rank": "",
+            "position": ""
+        },
+        {
+            "id": 2,
+            "name": "Trần Thị B",
+            "unit_id": 2,
+            "score": 0,
+            "rank": "",
+            "position": ""
+        },
+        {
+            "id": 3,
+            "name": "Lê Văn C",
+            "unit_id": 3,
+            "score": 0,
+            "rank": "",
+            "position": ""
+        }
+    ],
+    "contest_path": "/Users/maianhnguyen/go/src/github.com/lehaisonagentai3/free-contest/backend/Kỳ thi sĩ quan phân đội"
+}

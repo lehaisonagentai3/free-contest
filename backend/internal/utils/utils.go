@@ -25,7 +25,7 @@ func ImportQuestionFromJson(filePath string) ([]model.Question, error) {
 	return questions, nil
 }
 
-func LoadQuestionFromExcel(filePath string) ([]model.Question, error) {
+func LoadQuestionFromExcel(filePath string) ([]*model.Question, error) {
 	// 1. Mở file Excel
 	f, err := excelize.OpenFile(filePath)
 	if err != nil {
@@ -47,7 +47,7 @@ func LoadQuestionFromExcel(filePath string) ([]model.Question, error) {
 		return nil, errors.New("invalid row count, expected multiple of 7")
 	}
 
-	var questions []model.Question
+	var questions []*model.Question
 
 	// 3. Duyệt qua từng row, gom mỗi nhóm 7 dòng thành 1 Question
 	for i := 0; i < len(rows); i++ {
@@ -90,7 +90,7 @@ func LoadQuestionFromExcel(filePath string) ([]model.Question, error) {
 				return nil, errors.New("not enough rows for question options and answer, row " + fmt.Sprint(i+1) + " not enough")
 			}
 
-			questions = append(questions, q)
+			questions = append(questions, &q)
 			// bỏ qua nhóm 7 dòng (5 dòng data + 1 dòng blank)
 			i += 6
 		}
@@ -116,14 +116,14 @@ func LoadContestInfo(path string) (*model.Contest, error) {
 	contest := &model.Contest{
 		ID:         1,
 		Name:       folderName,
-		Subjects:   []model.Subject{},
+		Subjects:   []*model.Subject{},
 		FolderPath: path,
 	}
 	entries, err := os.ReadDir(path)
 	if err != nil {
 		return nil, err
 	}
-
+	questionIDCounter := 0
 	for id, entry := range entries {
 		if entry.IsDir() {
 			subjectPath := filepath.Join(path, entry.Name())
@@ -134,7 +134,7 @@ func LoadContestInfo(path string) (*model.Contest, error) {
 			// Giả sử tên thư mục là "Tên đề thi - Thời gian - phút"
 			subjectName := strings.TrimSpace(subjectParts[0])
 			testTime, _ := strconv.ParseInt(strings.TrimSpace(subjectParts[1]), 10, 64)
-			subject := model.Subject{
+			subject := &model.Subject{
 				Name:        subjectName,
 				Description: subjectName,
 				FolderPath:  subjectPath,
@@ -160,7 +160,7 @@ func LoadContestInfo(path string) (*model.Contest, error) {
 					if numberTestQuestion <= 0 {
 						return nil, fmt.Errorf("invalid number of questions in chapter: %s", chapterName)
 					}
-					chapter := model.Chapter{
+					chapter := &model.Chapter{
 						ID:              chapterID + 1, // ID bắt đầu từ 1
 						SubjectID:       subject.ID,
 						Name:            chapterName,
@@ -182,7 +182,11 @@ func LoadContestInfo(path string) (*model.Contest, error) {
 							if len(listQuestion) < chapter.NumQuestionTest {
 								return nil, fmt.Errorf("not enough questions in chapter %s, expected %d, got %d", chapter.Name, chapter.NumQuestionTest, len(listQuestion))
 							}
-							chapter.Questions = append(chapter.Questions, listQuestion...)
+							for _, question := range listQuestion {
+								question.ID = questionIDCounter
+								questionIDCounter++
+								chapter.Questions = append(chapter.Questions, question)
+							}
 							chapter.TotalQuestions += len(listQuestion)
 						}
 					}
@@ -195,4 +199,40 @@ func LoadContestInfo(path string) (*model.Contest, error) {
 		}
 	}
 	return contest, nil
+}
+
+func LoadOfficers(path string) ([]*model.Officer, error) {
+	f, err := excelize.OpenFile(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	if f.SheetCount == 0 {
+		return nil, errors.New("no sheets found in the Excel file")
+	}
+
+	sheetName := f.GetSheetList()[0]
+
+	var officers []*model.Officer
+	rows, err := f.GetRows(sheetName)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, row := range rows {
+		if len(row) < 5 {
+			continue
+		}
+		id, _ := strconv.Atoi(row[0])
+		officer := &model.Officer{
+			ID:       id,
+			Name:     row[1],
+			Rank:     row[2],
+			Position: row[3],
+			Unit:     row[4],
+		}
+		officers = append(officers, officer)
+	}
+	return officers, nil
 }
