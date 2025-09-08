@@ -462,7 +462,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Unit"
+                        "type": "string"
                     }
                 },
                 "message": {
@@ -573,10 +573,7 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "unit": {
-                    "$ref": "#/definitions/model.Unit"
-                },
-                "unit_id": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -721,20 +718,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/model.Subject"
                 }
             }
-        },
-        "model.Unit": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "parent_unit": {
-                    "$ref": "#/definitions/model.Unit"
-                }
-            }
         }
     }
 }`
@@ -742,7 +725,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "localhost:8298",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Free Contest API",

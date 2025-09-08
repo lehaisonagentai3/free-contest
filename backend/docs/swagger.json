@@ -15,7 +15,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "localhost:8298",
     "paths": {
         "/api/v1/officers": {
             "get": {
@@ -455,7 +455,7 @@
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/model.Unit"
+                        "type": "string"
                     }
                 },
                 "message": {
@@ -566,10 +566,7 @@
                     "type": "number"
                 },
                 "unit": {
-                    "$ref": "#/definitions/model.Unit"
-                },
-                "unit_id": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },
@@ -712,20 +709,6 @@
                 },
                 "subject": {
                     "$ref": "#/definitions/model.Subject"
-                }
-            }
-        },
-        "model.Unit": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "parent_unit": {
-                    "$ref": "#/definitions/model.Unit"
                 }
             }
         }
