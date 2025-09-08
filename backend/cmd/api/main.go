@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -54,6 +55,7 @@ func main() {
 			fmt.Printf("Chapter ID: %d, Name: %s, NumQuestionTest: %d, Total question: %d\n", chapter.ID, chapter.Name, chapter.NumQuestionTest, chapter.TotalQuestions)
 		}
 	}
+
 	fmt.Println("Contest service initialized successfully!")
 
 	// Initialize controllers
@@ -74,6 +76,26 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
+
+	router.Static("/static", "./ui/static")
+	router.StaticFile("/favicon.ico", "./ui/favicon.ico")
+	router.StaticFile("/manifest.json", "./ui/manifest.json")
+
+	// Serve React app for any non-API routes
+	router.NoRoute(func(c *gin.Context) {
+		// Check if the request is for an API route
+		if len(c.Request.URL.Path) >= 4 && c.Request.URL.Path[:4] == "/api" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "API endpoint not found"})
+			return
+		}
+		// Check if the request is for swagger
+		if len(c.Request.URL.Path) >= 4 && c.Request.URL.Path[:4] == "/v1/" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Route not found"})
+			return
+		}
+		// Serve React app index.html for all other routes (SPA routing)
+		c.File("./ui/index.html")
+	})
 
 	// API routes
 	v1 := router.Group("/api/v1")
