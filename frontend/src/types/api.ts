@@ -12,8 +12,7 @@ export interface Officer {
   position: string;
   rank: string;
   score: number;
-  unit_id: number;
-  unit: Unit;
+  unit: string;
   list_submission: Submission[];
 }
 

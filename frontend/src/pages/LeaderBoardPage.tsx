@@ -45,8 +45,8 @@ const LeaderBoardPage: React.FC = () => {
           bValue = b.name || '';
           break;
         case 'unit':
-          aValue = a.unit?.name || '';
-          bValue = b.unit?.name || '';
+          aValue = a.unit || '';
+          bValue = b.unit || '';
           break;
         case 'tests':
           aValue = a.list_submission?.length || 0;
@@ -85,8 +85,8 @@ const LeaderBoardPage: React.FC = () => {
   };
 
   const getScoreColor = (score: number): string => {
-    if (score >= 80) return '#28a745';
-    if (score >= 60) return '#ffc107';
+    if (score >= 8) return '#28a745';
+    if (score >= 6) return '#ffc107';
     return '#dc3545';
   };
 
@@ -131,9 +131,9 @@ const LeaderBoardPage: React.FC = () => {
           
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#28a745' }}>
-              {officers.filter(o => (o.score || 0) >= 80).length}
+              {officers.filter(o => (o.score || 0) >= 8).length}
             </div>
-            <div style={{ color: '#666' }}>Điểm cao (≥80%)</div>
+            <div style={{ color: '#666' }}>Điểm cao (≥8)</div>
           </div>
           
           <div style={{ textAlign: 'center' }}>
@@ -146,8 +146,8 @@ const LeaderBoardPage: React.FC = () => {
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#17a2b8' }}>
               {officers.length > 0 ? 
-                Math.round(officers.reduce((sum, o) => sum + (o.score || 0), 0) / officers.length) 
-                : 0}%
+                (officers.reduce((sum, o) => sum + (o.score || 0), 0) / officers.length).toFixed(1) 
+                : 0}/10
             </div>
             <div style={{ color: '#666' }}>Điểm trung bình</div>
           </div>
@@ -181,13 +181,13 @@ const LeaderBoardPage: React.FC = () => {
                     onClick={() => handleSort('score')}
                     style={{ cursor: 'pointer', userSelect: 'none' }}
                   >
-                    Điểm {sortBy === 'score' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    Tổng điểm {sortBy === 'score' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                   <th 
                     onClick={() => handleSort('tests')}
-                    style={{ cursor: 'pointer', userSelect: 'none' }}
+                    style={{ cursor: 'pointer', userSelect: 'none', minWidth: '200px' }}
                   >
-                    Bài thi đã làm {sortBy === 'tests' && (sortOrder === 'asc' ? '↑' : '↓')}
+                    Chi tiết bài thi {sortBy === 'tests' && (sortOrder === 'asc' ? '↑' : '↓')}
                   </th>
                 </tr>
               </thead>
@@ -200,21 +200,48 @@ const LeaderBoardPage: React.FC = () => {
                     <td style={{ fontWeight: 'bold' }}>{officer.name}</td>
                     <td>{officer.rank}</td>
                     <td>{officer.position}</td>
-                    <td>{officer.unit?.name || 'N/A'}</td>
+                    <td>{officer.unit || 'N/A'}</td>
                     <td style={{ 
                       fontWeight: 'bold', 
                       color: getScoreColor(officer.score || 0) 
                     }}>
-                      {officer.score || 0}%
+                      {officer.score || 0}
                     </td>
                     <td>
-                      {officer.list_submission?.length || 0}
-                      {officer.list_submission && officer.list_submission.length > 0 && (
-                        <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                          Lần cuối: {new Date(
-                            Math.max(...officer.list_submission.map(s => s.submitted_at)) * 1000
-                          ).toLocaleDateString('vi-VN')}
+                      {officer.list_submission && officer.list_submission.length > 0 ? (
+                        <div>
+                          <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
+                            Đã làm {officer.list_submission.length} bài thi
+                          </div>
+                          {officer.list_submission.map((submission, idx) => (
+                            <div key={idx} style={{ 
+                              fontSize: '12px', 
+                              color: '#666', 
+                              marginBottom: '2px',
+                              padding: '2px 4px',
+                              background: '#f8f9fa',
+                              borderRadius: '3px',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}>
+                              <span style={{ fontWeight: '500' }}>{submission.subject_name}</span>
+                              <span style={{ 
+                                color: getScoreColor(submission.score),
+                                fontWeight: 'bold'
+                              }}>
+                                {submission.score}
+                              </span>
+                            </div>
+                          ))}
+                          <div style={{ fontSize: '11px', color: '#999', marginTop: '4px' }}>
+                            Lần cuối: {new Date(
+                              Math.max(...officer.list_submission.map(s => s.submitted_at)) * 1000
+                            ).toLocaleDateString('vi-VN')}
+                          </div>
                         </div>
+                      ) : (
+                        <span style={{ color: '#999', fontStyle: 'italic' }}>Chưa có bài thi</span>
                       )}
                     </td>
                   </tr>
@@ -230,7 +257,7 @@ const LeaderBoardPage: React.FC = () => {
             <li>Xếp hạng dựa trên điểm số cao nhất mà mỗi cán bộ đạt được</li>
             <li>Nhấp vào tiêu đề cột để sắp xếp bảng</li>
             <li>🥇🥈🥉 đại diện cho 3 người có thành tích cao nhất</li>
-            <li>Màu điểm: <span style={{ color: '#28a745' }}>Xanh lá (≥80%)</span>, <span style={{ color: '#ffc107' }}>Vàng (60-79%)</span>, <span style={{ color: '#dc3545' }}>Đỏ (&lt;60%)</span></li>
+            <li>Màu điểm: <span style={{ color: '#28a745' }}>Xanh lá (≥8)</span>, <span style={{ color: '#ffc107' }}>Vàng (6-7.9)</span>, <span style={{ color: '#dc3545' }}>Đỏ (&lt;6)</span></li>
           </ul>
         </div>
       </div>

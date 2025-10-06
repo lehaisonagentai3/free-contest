@@ -1,4 +1,4 @@
 {
     "officer_path": "officers.xlsx",
-    "contest_path": "/Users/maianhnguyen/go/src/github.com/lehaisonagentai3/free-contest/backend/Kỳ thi sĩ quan phân đội"
+    "contest_path": "./Kỳ thi sĩ quan phân đội"
 }

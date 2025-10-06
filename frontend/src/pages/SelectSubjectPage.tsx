@@ -82,10 +82,10 @@ const SelectSubjectPage: React.FC<SelectSubjectPageProps> = ({ officerId }) => {
             </div>
             <div className="info-item">
               <div className="info-label">Đơn vị</div>
-              <div className="info-value">{officer.unit?.name || 'N/A'}</div>
+              <div className="info-value">{officer.unit || 'N/A'}</div>
             </div>
             <div className="info-item">
-              <div className="info-label">Điểm hiện tại</div>
+              <div className="info-label">Tổng điểm hiện tại</div>
               <div className="info-value">{officer.score || 0}</div>
             </div>
             <div className="info-item">

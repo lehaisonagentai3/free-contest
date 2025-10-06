@@ -24,16 +24,16 @@ const ResultPage: React.FC = () => {
   }, []);
 
   const getScoreColor = (score: number): string => {
-    if (score >= 80) return '#28a745'; // Green
-    if (score >= 60) return '#ffc107'; // Yellow
+    if (score >= 8) return '#28a745'; // Green
+    if (score >= 6) return '#ffc107'; // Yellow
     return '#dc3545'; // Red
   };
 
   const getScoreMessage = (score: number): string => {
-    if (score >= 90) return 'Tuyệt vời! Thành tích xuất sắc!';
-    if (score >= 80) return 'Làm tốt lắm! Xuất sắc!';
-    if (score >= 70) return 'Làm tốt! Tiếp tục phát huy!';
-    if (score >= 60) return 'Không tệ! Còn chỗ để cải thiện.';
+    if (score >= 9) return 'Tuyệt vời! Thành tích xuất sắc!';
+    if (score >= 8) return 'Làm tốt lắm! Xuất sắc!';
+    if (score >= 7) return 'Làm tốt! Tiếp tục phát huy!';
+    if (score >= 6) return 'Không tệ! Còn chỗ để cải thiện.';
     return 'Hãy học tập thêm và thử lại!';
   };
 
@@ -69,7 +69,7 @@ const ResultPage: React.FC = () => {
           <h2>Kết quả thi</h2>
           
           <div className="score-number" style={{ color: getScoreColor(submission.score) }}>
-            {submission.score}%
+            {submission.score}
           </div>
           
           <div style={{ fontSize: '18px', marginBottom: '20px', color: '#666' }}>
@@ -91,7 +91,7 @@ const ResultPage: React.FC = () => {
               <div>
                 <div style={{ fontWeight: 'bold', color: '#333' }}>Điểm số</div>
                 <div style={{ color: getScoreColor(submission.score), fontWeight: 'bold' }}>
-                  {submission.score}%
+                  {submission.score}/10
                 </div>
               </div>
               
@@ -141,20 +141,20 @@ const ResultPage: React.FC = () => {
               <div>
                 <strong>Mức điểm:</strong>
                 <div style={{ marginTop: '8px' }}>
-                  {submission.score >= 90 && (
-                    <span style={{ color: '#28a745' }}>⭐ Xuất sắc (90-100%)</span>
+                  {submission.score >= 9 && (
+                    <span style={{ color: '#28a745' }}>⭐ Xuất sắc (9-10)</span>
                   )}
-                  {submission.score >= 80 && submission.score < 90 && (
-                    <span style={{ color: '#28a745' }}>✅ Rất tốt (80-89%)</span>
+                  {submission.score >= 8 && submission.score < 9 && (
+                    <span style={{ color: '#28a745' }}>✅ Rất tốt (8-8.9)</span>
                   )}
-                  {submission.score >= 70 && submission.score < 80 && (
-                    <span style={{ color: '#ffc107' }}>👍 Tốt (70-79%)</span>
+                  {submission.score >= 7 && submission.score < 8 && (
+                    <span style={{ color: '#ffc107' }}>👍 Tốt (7-7.9)</span>
                   )}
-                  {submission.score >= 60 && submission.score < 70 && (
-                    <span style={{ color: '#fd7e14' }}>⚠️ Đạt yêu cầu (60-69%)</span>
+                  {submission.score >= 6 && submission.score < 7 && (
+                    <span style={{ color: '#fd7e14' }}>⚠️ Đạt yêu cầu (6-6.9)</span>
                   )}
-                  {submission.score < 60 && (
-                    <span style={{ color: '#dc3545' }}>❌ Cần cải thiện (&lt;60%)</span>
+                  {submission.score < 6 && (
+                    <span style={{ color: '#dc3545' }}>❌ Cần cải thiện (&lt;6)</span>
                   )}
                 </div>
               </div>
@@ -162,9 +162,9 @@ const ResultPage: React.FC = () => {
               <div>
                 <strong>Đề xuất:</strong>
                 <div style={{ marginTop: '8px', fontSize: '14px', color: '#666' }}>
-                  {submission.score >= 80 ? (
+                  {submission.score >= 8 ? (
                     "Làm tốt lắm! Hãy thử các môn thi nâng cao."
-                  ) : submission.score >= 60 ? (
+                  ) : submission.score >= 6 ? (
                     "Nỗ lực tốt! Hãy ôn tập lại và luyện tập thêm."
                   ) : (
                     "Hãy tập trung học các kiến thức cơ bản và thi lại."

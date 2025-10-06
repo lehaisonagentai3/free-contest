@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getOfficerById } from '../api/api';
 import { LoginPageProps } from '../types/api';
+import logo from '../logo.jpg';
 
 const LoginPage: React.FC<LoginPageProps> = ({ setOfficerId }) => {
   const [inputOfficerId, setInputOfficerId] = useState<string>('');
@@ -40,19 +41,33 @@ const LoginPage: React.FC<LoginPageProps> = ({ setOfficerId }) => {
   return (
     <div className="container">
       <div className="card" style={{ maxWidth: '400px', margin: '100px auto' }}>
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <img 
+            src={logo} 
+            alt="Logo" 
+            style={{ 
+              width: '120px', 
+              height: 'auto', 
+              borderRadius: '8px',
+              marginBottom: '16px'
+            }} 
+          />
+        </div>
+        
         <h2 style={{ textAlign: 'center', marginBottom: '24px' }}>Đăng nhập</h2>
         
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
           <div className="input-group">
-            <label htmlFor="officerId">Mã cán bộ</label>
+            <label htmlFor="officerId">Mã thí sinh</label>
             <input
               type="number"
               id="officerId"
               value={inputOfficerId}
               onChange={(e) => setInputOfficerId(e.target.value)}
-              placeholder="Nhập mã cán bộ của bạn"
+              placeholder="Nhập mã thí sinh của bạn"
               disabled={loading}
               required
             />
@@ -69,7 +84,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ setOfficerId }) => {
         </form>
         
         <div style={{ textAlign: 'center', marginTop: '20px', color: '#666' }}>
-          <p>Nhập mã cán bộ để truy cập hệ thống thi đấu</p>
+          <p>Nhập mã thí sinh để truy cập hệ thống thi</p>
         </div>
       </div>
     </div>

@@ -31,6 +31,7 @@ import (
 
 // @host localhost:8298
 func main() {
+	gin.SetMode(gin.ReleaseMode)
 	// Load configuration
 	conf, err := config.LoadAppConfig("config.json")
 	if err != nil {
@@ -49,13 +50,6 @@ func main() {
 	fmt.Printf("Contest Name: %s\n", contest.Name)
 	fmt.Printf("Contest Folder Path: %s\n", contest.FolderPath)
 	fmt.Println("Total Subjects:", len(contest.Subjects))
-	for _, subject := range contest.Subjects {
-		fmt.Printf("Subject ID: %d, Name: %s, Description: %s, Total Chapters: %d, Test time: %d, Total Questions In Test: %d\n", subject.ID, subject.Name, subject.Description, len(subject.Chapters), subject.TestTime, subject.NumQuestionTest)
-		for _, chapter := range subject.Chapters {
-			fmt.Printf("Chapter ID: %d, Name: %s, NumQuestionTest: %d, Total question: %d\n", chapter.ID, chapter.Name, chapter.NumQuestionTest, chapter.TotalQuestions)
-		}
-	}
-
 	fmt.Println("Contest service initialized successfully!")
 
 	// Initialize controllers

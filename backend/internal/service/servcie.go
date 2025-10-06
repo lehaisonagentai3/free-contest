@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"math/rand"
 	"strings"
 	"time"
@@ -32,7 +31,7 @@ func NewContestService(conf *config.AppConfig) (*ContestService, error) {
 	for _, officer := range conf.ListOfficer {
 		mapOfficers[officer.ID] = officer
 	}
-	log.Printf("Loaded %d officers from %s\n", len(conf.ListOfficer), conf.OfficerPath)
+	fmt.Printf("Loaded %d officers from %s\n", len(conf.ListOfficer), conf.OfficerPath)
 	mapUnits := make(map[string]string)
 
 	contestInfo, err := utils.LoadContestInfo(conf.ContestPath)
@@ -71,9 +70,21 @@ func (s *ContestService) GetAllUnits() []string {
 func (s *ContestService) GetAllOfficers() []*model.Officer {
 	officers := make([]*model.Officer, 0, len(s.mapOfficers))
 	for _, officer := range s.mapOfficers {
+		officer.Score = s.caculateTotalScoreOfOffices(officer)
 		officers = append(officers, officer)
 	}
 	return officers
+}
+
+func (s *ContestService) caculateTotalScoreOfOffices(office *model.Officer) float32 {
+	if office == nil || len(office.ListSubmission) == 0 {
+		return 0
+	}
+	var totalScore float32
+	for _, submission := range office.ListSubmission {
+		totalScore += submission.Score
+	}
+	return totalScore
 }
 
 // GetOfficerByID returns an officer by ID with unit information
